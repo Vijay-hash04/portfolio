@@ -1,45 +1,49 @@
-// script.js for interactive functionality of the dynamic portfolio website
+// Comprehensive interactive features
 
-// Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-});
-
-// Animations on scroll
-const revealElements = document.querySelectorAll('.reveal');
-const options = {
-    root: null,
-    rootMargin: '0px',
-    threshold: 0.1
+// Smooth scrolling
+const smoothScroll = (target) => {
+    const targetElement = document.querySelector(target);
+    targetElement.scrollIntoView({ behavior: 'smooth' });
 };
 
-const handleIntersect = (entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate');
-            observer.unobserve(entry.target);
+// Form validation
+const validateForm = (form) => {
+    const inputs = form.querySelectorAll('input, textarea');
+    let isValid = true;
+    inputs.forEach((input) => {
+        if (!input.value) {
+            isValid = false;
+            input.classList.add('error');
+        } else {
+            input.classList.remove('error');
         }
     });
+    return isValid;
 };
 
-const observer = new IntersectionObserver(handleIntersect, options);
-revealElements.forEach(element => observer.observe(element));
+// Animations
+const animateElements = () => {
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in');
+                observer.unobserve(entry.target);
+            }
+        });
+    });
+    elements.forEach(el => observer.observe(el));
+};
 
-// Form handling
-document.querySelector('form').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Scroll-to-top button
+const scrollToTopButton = document.querySelector('.scroll-to-top');
+if (scrollToTopButton) {
+    scrollToTopButton.addEventListener('click', () => {
+        smoothScroll('body');
+    });
+}
 
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData);
-
-    console.log(data); // Replace this with actual form submission logic
-
-    alert('Form submitted successfully!');
-    this.reset();
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+    animateElements();
 });
